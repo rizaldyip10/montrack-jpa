@@ -1,6 +1,6 @@
 package com.purwadhika.montrackv2.controllers;
 
-import com.purwadhika.montrackv2.dto.UserDto;
+import com.purwadhika.montrackv2.dto.UserRequestDto;
 import com.purwadhika.montrackv2.entities.User;
 import com.purwadhika.montrackv2.services.UserService;
 import lombok.extern.java.Log;
@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody UserDto newUser) {
+    public User createUser(@RequestBody UserRequestDto newUser) {
         return userService.createUser(newUser.getName(), newUser.getEmail(), newUser.getPassword(), newUser.getPin());
     }
 }

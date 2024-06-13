@@ -68,4 +68,9 @@ public class Wallet {
     protected void onUpdate() {
         updatedAt = new Date();
     }
+
+    @PreRemove
+    protected void onRemove() {
+        this.deletedAt = new Date();
+    }
 }

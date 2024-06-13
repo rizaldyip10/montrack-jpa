@@ -1,6 +1,6 @@
 package com.purwadhika.montrackv2.controllers;
 
-import com.purwadhika.montrackv2.dto.WalletDto;
+import com.purwadhika.montrackv2.dto.WalletRequestDto;
 import com.purwadhika.montrackv2.entities.Wallet;
 import com.purwadhika.montrackv2.services.WalletService;
 import lombok.extern.java.Log;
@@ -29,12 +29,12 @@ public class WalletController {
     }
 
     @PostMapping("/{userId}")
-    public Wallet createNewWaller(@PathVariable("userId") Long userId, @RequestBody WalletDto newWalletDto) {
+    public Wallet createNewWaller(@PathVariable("userId") Long userId, @RequestBody WalletRequestDto newWalletDto) {
         return walletService.createWallet(newWalletDto.getName(), newWalletDto.getBalance(), newWalletDto.getCurrencyId(), userId);
     }
 
     @PutMapping("/{userId}/{walletId}")
-    public Wallet updateWallet(@PathVariable("userId") Long userId, @PathVariable("walletId") Long walletId, @RequestBody WalletDto updatedWallet) {
+    public Wallet updateWallet(@PathVariable("userId") Long userId, @PathVariable("walletId") Long walletId, @RequestBody WalletRequestDto updatedWallet) {
         return walletService.updateWallet(userId, walletId, updatedWallet.getName(), updatedWallet.getBalance());
     }
 

@@ -38,12 +38,17 @@ public class Currency {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = new Date();
-        updatedAt = new Date();
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = new Date();
+        this.updatedAt = new Date();
+    }
+
+    @PreRemove
+    protected void onRemove() {
+        this.deletedAt = new Date();
     }
 }

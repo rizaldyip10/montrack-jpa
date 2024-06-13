@@ -3,7 +3,7 @@ package com.purwadhika.montrackv2.dto;
 import lombok.Data;
 
 @Data
-public class WalletDto {
+public class WalletRequestDto {
     private String name;
     private Double balance;
     private Long currencyId;
