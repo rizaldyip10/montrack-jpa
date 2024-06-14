@@ -40,9 +40,18 @@ public class AuthController {
         String hashedPassword = authService.encodePassword(userRegister.getPassword());
         userService.createUser(userRegister.getName(), userRegister.getEmail(), hashedPassword);
 
+        Authentication auth =
+                authenticationManager
+                        .authenticate(new UsernamePasswordAuthenticationToken(
+                                userRegister.getEmail(),
+                                userRegister.getPassword()));
+
+        String token = authService.generateToken(auth);
+
         RegisterResponseDto response = new RegisterResponseDto();
         response.setName(userRegister.getName());
         response.setMessage("Register success");
+        response.setToken(token);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @PostMapping("/login")
