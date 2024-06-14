@@ -6,12 +6,10 @@ import lombok.ToString;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-
 @Getter
 @Setter
 @ToString
 public class Response<T> {
-
     private int statusCode;
     private String message;
     boolean success = false;
@@ -24,7 +22,6 @@ public class Response<T> {
         if (statusCode == HttpStatus.OK.value()) {
             success = true;
         }
-
     }
 
     public static <T> ResponseEntity<Response<Object>> failed(String message) {
@@ -32,7 +29,7 @@ public class Response<T> {
     }
 
     public static <T> ResponseEntity<Response<T>> failed(T data) {
-        return failed(HttpStatus.BAD_REQUEST.value(), "Bad request", data);
+        return failed(HttpStatus.BAD_REQUEST.value(), "Bad Request", data);
     }
 
     public static <T> ResponseEntity<Response<T>> failed(int statusCode, String message) {

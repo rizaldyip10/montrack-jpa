@@ -8,16 +8,14 @@ import org.springframework.http.HttpStatus;
 import java.util.Collections;
 import java.util.List;
 
-
 @EqualsAndHashCode(callSuper = true)
 @Setter
 @Data
-public class ApplicationException extends RuntimeException  {
+public class ApplicationException extends RuntimeException{
 
     private HttpStatus httpStatus;
     private List<String> errors;
     private Object data;
-
 
     public ApplicationException(String message) {
         this(HttpStatus.BAD_REQUEST, message);
@@ -33,5 +31,4 @@ public class ApplicationException extends RuntimeException  {
         this.errors = errors;
         this.data = data;
     }
-
 }

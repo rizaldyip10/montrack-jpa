@@ -1,4 +1,5 @@
 package com.purwadhika.montrackv2.exceptions;
+
 import com.purwadhika.montrackv2.responses.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -16,29 +17,29 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataNotFoundException.class)
-    public final ResponseEntity<Response<String>> handleProductNotFoundException(DataNotFoundException ex){
+    public final ResponseEntity<Response<String>> handleProductNotFoundException(DataNotFoundException ex) {
         return Response.failed(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
+
     @ExceptionHandler(ApplicationException.class)
-    public final ResponseEntity<Response<String>> handleProductNotFoundException(ApplicationException ex){
+    public final ResponseEntity<Response<String>> handleProductNotFoundException(ApplicationException ex) {
         return Response.failed(HttpStatus.BAD_REQUEST.value(), "Unable to process the request", ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public final ResponseEntity<Response<String>> handleValidationExceptions(MethodArgumentNotValidException ex){
-        String errorMessage = ex.getBindingResult().getAllErrors().stream()
+    public final ResponseEntity<Response<String>> handleValidationException(MethodArgumentNotValidException ex) {
+        String errorMsg = ex.getBindingResult().getAllErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(", "));
-        return Response.failed(HttpStatus.BAD_REQUEST.value(), "Unable to process the request. Error: " + errorMessage);
+
+        return Response.failed(HttpStatus.BAD_REQUEST.value(), "Unable to process the request. Error: " + errorMsg);
     }
 
-    @ExceptionHandler(Exception.class)
     public final ResponseEntity<Response<String>> handleAllExceptions(Exception ex) {
-
         log.error(ex.getMessage(), ex.getCause(), ex);
 
         if (ex.getCause() instanceof UnknownHostException) {
-            return Response.failed(HttpStatus.BAD_REQUEST.value(), "Unable to process the request: " + ex.getLocalizedMessage());
+            return Response.failed((HttpStatus.BAD_REQUEST.value()), "Unable to process the request. Error: " + ex.getLocalizedMessage());
         }
 
         return Response.failed(HttpStatus.BAD_REQUEST.value(), "Unable to process the request: " + ex.getMessage());
