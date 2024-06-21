@@ -1,54 +1,43 @@
 package com.purwadhika.montrackv2.currencies.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.time.Instant;
 
+@Getter
+@Setter
 @Entity
-@Data
-@Table(name = "currencies", schema = "montrack")
+@Table(name = "currency", schema = "montrack")
 public class Currency {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "currencies_id_gen")
-    @SequenceGenerator(name = "currencies_id_gen", sequenceName = "currencies_id_seq")
+    @ColumnDefault("nextval('montrack.currencies_id_seq'::regclass)")
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Integer id;
 
-    @NotNull(message = "please enter currency")
-    @NotBlank(message = "Please enter currency")
-    @Column(name = "currency", nullable = false)
-    private String currency;
+    @Size(max = 10)
+    @NotNull
+    @Column(name = "currency", nullable = false, length = 10)
+    private String name;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
+    @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    private Instant createdAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
+    @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at", nullable = false)
-    private Date updatedAt;
+    private Instant updatedAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "deleted_at")
-    private Date deletedAt;
+    private Instant deletedAt;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = new Date();
-    }
-
-    @PreRemove
-    protected void onRemove() {
-        this.deletedAt = new Date();
-    }
 }

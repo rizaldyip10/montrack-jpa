@@ -6,8 +6,10 @@ import com.purwadhika.montrackv2.auth.dto.RegisterRequestDto;
 import com.purwadhika.montrackv2.auth.dto.RegisterResponseDto;
 import com.purwadhika.montrackv2.auth.entity.UserAuth;
 import com.purwadhika.montrackv2.auth.service.AuthService;
+import com.purwadhika.montrackv2.users.entity.User;
 import com.purwadhika.montrackv2.users.repositories.UserRepository;
-import com.purwadhika.montrackv2.users.services.UserService;
+import com.purwadhika.montrackv2.users.service.UserService;
+//import com.purwadhika.montrackv2.utils.AuthorizationHandler;
 import jakarta.servlet.http.Cookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,10 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -37,8 +36,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Validated @RequestBody RegisterRequestDto userRegister) {
-        String hashedPassword = authService.encodePassword(userRegister.getPassword());
-        userService.createUser(userRegister.getName(), userRegister.getEmail(), hashedPassword);
+        userService.register(userRegister);
 
         Authentication auth =
                 authenticationManager
@@ -76,5 +74,12 @@ public class AuthController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Set-Cookie", cookie.getName() + "=" + cookie.getValue() + "; Path=/; HttpOnly");
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(response);
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> profile() {
+        User user = userService.profile();
+
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }

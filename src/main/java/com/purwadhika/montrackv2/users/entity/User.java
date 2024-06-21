@@ -1,80 +1,87 @@
 package com.purwadhika.montrackv2.users.entity;
 
-import com.purwadhika.montrackv2.wallets.entitiy.Wallet;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.purwadhika.montrackv2.currencies.entity.Currency;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
-import java.util.Date;
-import java.util.List;
+import java.time.Instant;
 
+@Getter
+@Setter
 @Entity
-@Data
 @Table(name = "users", schema = "montrack")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_gen")
-    @SequenceGenerator(name = "users_id_gen", sequenceName = "users_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "montrack.users_id_gen")
+    @SequenceGenerator(name = "montrack.users_id_gen", sequenceName = "montrack.users_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @NotNull(message = "Your name is required")
-    @NotBlank(message = "Please enter your name")
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @NotNull(message = "Email is required")
-    @NotBlank(message = "Please enter your name")
-    @Column(name = "email", nullable = false)
+    @Size(max = 150)
+    @NotNull
+    @Column(name = "email", nullable = false, length = 150)
     private String email;
 
-    @NotNull(message = "Password is required")
-    @NotBlank(message = "Please enter your password")
-    @Column(name = "password", nullable = false)
+    @JsonIgnore
+    @Size(max = 100)
+    @NotNull
+    @Column(name = "password", nullable = false, length = 100)
     private String password;
 
-    @NotNull(message = "PIN is required")
-    @NotBlank(message = "Please enter your PIN")
-    @Column(name = "pin", nullable = false)
-    private String pin;
+    @Size(max = 255)
+    @Column(name = "display_name")
+    private String displayName;
 
-    @Column(name = "profile_img")
-    private String profileImg;
+    @Size(max = 255)
+    @Column(name = "avatar")
+    private String avatar;
 
-    @Column(name = "quotes")
+    @Size(max = 150)
+    @Column(name = "quotes", length = 150)
     private String quotes;
 
-    @Transient
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Wallet> wallets;
+    @JsonIgnore
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ColumnDefault("1")
+    @JoinColumn(name = "active_currency", nullable = false)
+    private Currency currency;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
+    @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    private Instant createdAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
+    @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_at", nullable = false)
-    private Date updatedAt;
+    private Instant updatedAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "deleted_at")
-    private Date deletedAt;
+    private Instant deletedAt;
 
     @PrePersist
-    protected void onCreate() {
-        createdAt = new Date();
-        updatedAt = new Date();
+    public void prePersist() {
+        this.createdAt = Instant.now();
+        this.updatedAt = Instant.now();
     }
 
     @PreUpdate
-    protected void onUpdate() {
-        updatedAt = new Date();
+    public void preUpdate() {
+        this.updatedAt = Instant.now();
     }
 
     @PreRemove
-    protected void onRemove() {
-        this.deletedAt = new Date();
+    public void preRemove() {
+        this.deletedAt = Instant.now();
     }
 }
